@@ -1,4 +1,4 @@
-# py-faster-rcnn with virtual pooling. Speedup object detection
+# py-faster-rcnn with virtual pooling. 
 
 ### Disclaimer
 
