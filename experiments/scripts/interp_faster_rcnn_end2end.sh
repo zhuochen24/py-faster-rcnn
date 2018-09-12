@@ -48,10 +48,25 @@ LOG="experiments/logs/faster_rcnn_end2end_${NET}_${EXTRA_ARGS_SLUG}.txt.`date +'
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
+time ./tools/train_net.py --gpu ${GPU_ID} \
+  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/interp_conv43_solver.prototxt \
+   --weights data/faster_rcnn_models/VGG16_faster_rcnn_final.caffemodel \
+  --imdb ${TRAIN_IMDB} \
+  --iters ${ITERS} \
+  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
+  ${EXTRA_ARGS}
+
+set +x
+NET_FINAL=`grep -B 1 "done solving" ${LOG} | grep "Wrote snapshot" | awk '{print $4}'`
+set -x
+
 #_lininterp_conv11.prototxt \
 time ./tools/test_net.py --gpu ${GPU_ID} \
-  --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test_lininterp_conv11.prototxt \
-   --net data/faster_rcnn_models/VGG16_faster_rcnn_final.caffemodel \
+  --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test_lininterp_conv43.prototxt \
+  --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/faster_rcnn_end2end.yml \
   ${EXTRA_ARGS}
+
+ # --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test_lininterp_conv11.prototxt \
+ #  --net data/faster_rcnn_models/VGG16_faster_rcnn_final.caffemodel \

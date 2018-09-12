@@ -4,7 +4,6 @@
 
 namespace caffe {
 
-
 template <typename Dtype>
 void InterpLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
