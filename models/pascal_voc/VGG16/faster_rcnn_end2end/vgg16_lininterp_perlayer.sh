@@ -1,20 +1,25 @@
 #!/bin/bash
 
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu1_1.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu1_2.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu2_1.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu2_2.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu3_1.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu3_2.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu3_3.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu4_1.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu4_2.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu4_3.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_1.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_2.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_3.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_3.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_rpn_relu_3x3.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round1.prototxt test_all_round1.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round2.prototxt test_all_round2.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round3.prototxt test_all_round3.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round4.prototxt test_all_round4.prototxt
+
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu1_1.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu1_2.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu2_1.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu2_2.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu3_1.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu3_2.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu3_3.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu4_1.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu4_2.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu4_3.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_1.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_2.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_3.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu5_3.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_rpn_relu_3x3.prototxt
 
 #./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc train_all_relu1_1.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc train_all_relu1_2.prototxt

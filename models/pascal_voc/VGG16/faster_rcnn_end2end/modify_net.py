@@ -83,10 +83,11 @@ def gen_VIP_perlayer_new(file_prefix):
 				# rpn outputs share the output, so no break
 				#break  # should I break here? what if multiple ones using the output of this interpolation?
 
-def gen_VIP_round(roundInd,layers_to_interp):
+
+def gen_VIP_round_new(roundInd,layers_to_interp,file_prefix, gen_solver):
 	net = caffe_pb2.NetParameter()
 
-	fn = 'train_val_resnet50.prototxt'
+	fn = '{}.prototxt'.format(file_prefix)
 	with open(fn) as f:
 		s = f.read()
 		txtf.Merge(s, net)
@@ -103,116 +104,10 @@ def gen_VIP_round(roundInd,layers_to_interp):
 	for convLayer in convLayers:
 		if convLayer.name in layers_to_interp:
 			convLayer.convolution_param.stride[0] = 2*convLayer.convolution_param.stride[0]
-			interpLayerName = convLayer.name+'_relu'
-			if interpLayerName not in layerNames:
-				interpLayerName = 'scale'+convLayer.name.strip('res')
-			print '"{}",'.format(interpLayerName)
-			interp_layer_names.append(interpLayerName)
-			count+=1
-			interp_bottom_name = convLayer.name
-			interp_bottom_names.append(interp_bottom_name)
-
-	for interp_bottom_name, interpLayerName in zip(interp_bottom_names, interp_layer_names):
-		for layeridx, layer in enumerate(layers):
-			if interp_bottom_name in layer.bottom and layeridx > layerNames.index(interpLayerName):
-				for ind, bottomLayer in enumerate(layer.bottom):
-					if bottomLayer == interp_bottom_name:
-						interp_top_name = 'lininterp/'+interp_bottom_name
-						interp_top_names.append(interp_top_name)
-						layers[layeridx].bottom[ind] = interp_top_name
-				#break   ## no break here
-	outFn = './tmp_train_val/tmp_train_val_resnet50_round{}.prototxt'.format(roundInd)
-	#print 'writing', outFn
-	with open(outFn, 'w') as f:
-		f.write(str(net))
-
-	newFn = './tmp_train_val/train_val_resnet50_round{}.prototxt'.format(roundInd)
-	with open(outFn) as f:
-		with open(newFn,'w') as newf:
-			flag = 0
-			dummyExist = 0
-			for line in f.readlines():
-				for interpIdx, interpLayerName in enumerate(interp_layer_names):
-					if interpLayerName in line:
-						if '5a' in interpLayerName or '5b' in interpLayerName or '5c' in interpLayerName:
-							flag = 2
-						else:
-							flag=1
-						interp_top_name = interp_top_names[interpIdx]
-						interp_bottom_name = interp_bottom_names[interpIdx]
-						break
-					if flag == 2 and 'layer' in line:
-						flag = 0
-						if not dummyExist:
-							newf.write('layer {\n')
-							newf.write('  type: "DummyData"\n')
-							newf.write('  name: "{}"\n'.format('onlyone_dummy'))
-							newf.write('  top: "{}"\n'.format('onlyone_dummy'))
-							newf.write('  dummy_data_param{\n')
-							newf.write('    num: 50\n')
-							newf.write('    channels: 512\n')
-							newf.write('    width: 7\n')
-							newf.write('    height: 7\n')
-							newf.write('    }\n')
-							newf.write('}\n')
-							dummyExist = 1
-						newf.write('layer {\n')
-						newf.write('  type: "Interp"\n')
-						newf.write('  name: "{}"\n'.format(interp_top_name+'_tmp'))
-						newf.write('  top: "{}"\n'.format(interp_top_name+'_tmp'))
-						newf.write('  bottom: "{}"\n'.format(interp_bottom_name))
-						newf.write('}\n')
-
-
-						newf.write('layer {\n')
-						newf.write('  type: "Crop"\n')
-						newf.write('  name: "{}"\n'.format(interp_top_name))
-						newf.write('  bottom: "{}"\n'.format(interp_top_name+'_tmp'))
-						newf.write('  bottom: "{}"\n'.format('onlyone_dummy'))
-						newf.write('  top: "{}"\n'.format(interp_top_name))
-						newf.write('  crop_param{\n')
-						newf.write('    axis: 2\n')
-						newf.write('    offset: 0\n')
-						newf.write('    }\n')
-						newf.write('}\n')
-					if flag == 1 and 'layer' in line:
-						flag = 0
-						newf.write('layer {\n')
-						newf.write('  type: "Interp"\n')
-						newf.write('  name: "{}"\n'.format(interp_top_name))
-						newf.write('  top: "{}"\n'.format(interp_top_name))
-						newf.write('  bottom: "{}"\n'.format(interp_bottom_name))
-						newf.write('}\n')
-						break
-					elif flag==1:
-						break
-				newf.write(line)
-
-	print './build/tools/caffe time --model=models/resnet/tmp_train_val/train_val_resnet50_round{0}.prototxt  -gpu 1  2>&1 | tee  ./resnet_results/time_resnet50_lininterp_round{0}_interpCUDAv3.out'.format(roundInd)
-	print "./build/tools/caffe train --solver=models/resnet/solver_resnet50_round{0}.prototxt --weights=models/resnet/ResNet-50-model.caffemodel -gpu 0 2>&1 | tee ./resnet_results/resnet50_lininterp_round{0}.out".format(roundInd)
-
-
-def gen_VIP_round_new(roundInd,layers_to_interp):
-	net = caffe_pb2.NetParameter()
-
-	fn = 'ALL_CNN_C_train_val.prototxt'
-	with open(fn) as f:
-		s = f.read()
-		txtf.Merge(s, net)
-
-	layers = [l for l in net.layer]
-	layerNames = [l.name for l in net.layer]
-	convLayers = [l for l in net.layer if l.type == 'Convolution']
-	#convLayerNames = [l.name for l in net.layer if l.type == 'Convolution']
-
-	count=0
-	interp_bottom_names = []
-	interp_top_names = []
-	interp_layer_names = []
-	for convLayer in convLayers:
-		if convLayer.name in layers_to_interp:
-			convLayer.convolution_param.stride[0] = 2*convLayer.convolution_param.stride[0]
-                        interpLayerName = 'relu'+convLayer.name[-1]
+			if convLayer.name == 'rpn/output':
+				interpLayerName = 'rpn_relu_3x3'
+			else:
+				interpLayerName = 'relu'+convLayer.name[4:]
 			if interpLayerName not in layerNames:
                             print 'Interpolation layer not found'
 			#print '"{}",'.format(interpLayerName)
@@ -230,12 +125,12 @@ def gen_VIP_round_new(roundInd,layers_to_interp):
 						interp_top_names.append(interp_top_name)
 						layers[layeridx].bottom[ind] = interp_top_name
 				#break   ## no break here
-	outFn = './tmp_train_val/tmp_train_val_ALLCNNC_round{}.prototxt'.format(roundInd)
+	outFn = './tmp_train_val/tmp_{0}_round{1}.prototxt'.format(file_prefix,roundInd)
 	#print 'writing', outFn
 	with open(outFn, 'w') as f:
 		f.write(str(net))
 
-	newFn = './tmp_train_val/train_val_ALLCNNC_round{}.prototxt'.format(roundInd)
+	newFn = './tmp_train_val/{0}_round{1}.prototxt'.format(file_prefix,roundInd)
 	with open(outFn) as f:
 		with open(newFn,'w') as newf:
 			flag = 0
@@ -260,45 +155,52 @@ def gen_VIP_round_new(roundInd,layers_to_interp):
 						break
 				newf.write(line)
 
-	solverTemplateFn = './tmp_solver/ALL_CNN_C_solver_template.prototxt'
-	solverFn = './tmp_solver/solver_ALLCNNC_round{}.prototxt'.format(roundInd)
-	with open(solverTemplateFn) as tempf:
-		with open(solverFn, 'w') as f:
-			f.write('net: "models/ALL-CNN/tmp_train_val/train_val_ALLCNNC_round{}.prototxt"\n'.format(roundInd))
-			for line in tempf.readlines():
-				f.write(line)
-			f.write('snapshot_prefix: "models/ALL-CNN/snapshots/ALLCNNC_lininterp_finetune{}_CUDAv5"'.format(roundInd))
+	if gen_solver:
+		solverTemplateFn = './tmp_solver/solver_template.prototxt'
+		solverFn = './tmp_solver/solver_round{}.prototxt'.format(roundInd)
+		with open(solverTemplateFn) as tempf:
+			with open(solverFn, 'w') as f:
+				f.write('train_net: "models/pascal_voc/VGG16/faster_rcnn_end2end/tmp_train_val/train_all_round{}.prototxt"\n'.format(roundInd))
+				for line in tempf.readlines():
+					f.write(line)
+				f.write('snapshot_prefix: "vgg16_lininterp_finetune{}"'.format(roundInd))
 
-	print './build/tools/caffe time --model=models/ALL-CNN/tmp_train_val/train_val_ALLCNNC_round{0}.prototxt  -gpu 1  2>&1 | tee  ./allcnn_results/time_ALLCNNC_lininterp_round{0}_interpCUDAv5.out'.format(roundInd)
-	print "./build/tools/caffe train --solver=models/ALL-CNN/tmp_solver/solver_ALLCNNC_round{0}.prototxt --weights=models/ALL-CNN/snapshots/ALLCNNC_lininterp_finetune{1}_CUDAv5.caffemodel -gpu 1 2>&1 | tee ./allcnn_results/ALLCNNC_lininterp_round{0}_CUDAv5.out".format(roundInd, roundInd-1)
+		print "./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round{0}.prototxt test_all_round{0}.prototxt".format(roundInd)
 
 ########################################========= main ===========###############################
-#`all_layers_to_interp=[
-#`	"origin",
-#`	"conv1",
-#`	"conv2",
-#`	"conv3",
-#`	"conv4",
-#`	"conv5",
-#`	"conv6",
-#`	"conv7",
-#`	"conv8",
-#`	"conv9"
-#`]
-#`roundInd = 1
-#`round3Elem = [27,28,35,45,4,5,26,1,14,15,3,41,51,22]
-#`if roundInd == 1:
-#`	###### for round 1
-#`	layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43]]
-#`elif roundInd == 2:
-#`	###### for round 2
-#`	layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43,21,46,47,48,49,50,52,53]]
-#`elif roundInd == 3:
-#`	###### for round 3
-#`	for perlayer in range(len(round3Elem)):
-#`		layers_to_interp = [all_layers_to_interp[i] for i in [10,11,17,18,19,20,23,24,29,30,31,32,33,34,36,37,38,39,40,42,43,21,46,47,48,49,50,52,53]+round3Elem[:perlayer+1]]
-#`		gen_VIP_round_new(roundInd*10+perlayer+1,layers_to_interp)
+all_layers_to_interp=[
+	"origin",
+	"conv1_1",
+	"conv1_2",
+	"conv2_1",
+	"conv2_2",
+	"conv3_1",
+	"conv3_2",
+	"conv3_3",
+	"conv4_1",
+	"conv4_2",
+	"conv4_3",
+	"conv5_1",
+	"conv5_2",
+	"conv5_3",
+	"rpn/output"
+]
+for roundInd in range(1,5):
+	if roundInd == 1:
+		###### for round 1
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14]]
+	elif roundInd == 2:
+		###### for round 2
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14,4,7,10,13]]
+	elif roundInd == 3:
+		###### for round 3
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14,4,7,10,13,8, 9, 11]]
+	elif roundInd == 4:
+		###### for round 4
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14,4,7,10,13,8, 9, 11,3,5,6,12]]
+	gen_VIP_round_new(roundInd,layers_to_interp, 'train_all', gen_solver=True)
+	gen_VIP_round_new(roundInd,layers_to_interp, 'test_all', gen_solver=False)
 
-gen_VIP_perlayer_new('train_all')
-gen_VIP_perlayer_new('test_all')
+#gen_VIP_perlayer_new('train_all')
+#gen_VIP_perlayer_new('test_all')
 
