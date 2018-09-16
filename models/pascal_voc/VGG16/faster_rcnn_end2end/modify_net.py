@@ -191,13 +191,13 @@ for roundInd in range(1,5):
 		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14]]
 	elif roundInd == 2:
 		###### for round 2
-		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14,4,7,10,13]]
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,4,7,10,13,14]]
 	elif roundInd == 3:
 		###### for round 3
-		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14,4,7,10,13,8, 9, 11]]
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,4,7,8,9,10,11,13,14]]
 	elif roundInd == 4:
 		###### for round 4
-		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14,4,7,10,13,8, 9, 11,3,5,6,12]]
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,3,4,5,6,7,8,9,10,11,12,13,14]]
 	gen_VIP_round_new(roundInd,layers_to_interp, 'train_all', gen_solver=True)
 	gen_VIP_round_new(roundInd,layers_to_interp, 'test_all', gen_solver=False)
 

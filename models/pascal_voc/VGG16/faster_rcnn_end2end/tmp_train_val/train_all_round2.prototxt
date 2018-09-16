@@ -437,8 +437,8 @@ layer {
 }
 layer {
   type: "Interp"
-  name: "lininterp/conv5_3"
-  top: "lininterp/conv5_3"
+  name: "lininterp/rpn/output"
+  top: "lininterp/rpn/output"
   bottom: "rpn/output"
 }
 layer {

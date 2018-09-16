@@ -119,6 +119,7 @@ def im_detect(net, im, boxes=None):
         boxes (ndarray): R x (4*K) array of predicted bounding boxes
     """
     blobs, im_scales = _get_blobs(im, boxes)
+    _t = {'im_forward' : Timer()}
 
     # When mapping from image ROIs to feature map ROIs, there's some aliasing
     # (some distinct image ROIs get mapped to the same feature ROI).
@@ -151,7 +152,11 @@ def im_detect(net, im, boxes=None):
         forward_kwargs['im_info'] = blobs['im_info'].astype(np.float32, copy=False)
     else:
         forward_kwargs['rois'] = blobs['rois'].astype(np.float32, copy=False)
+    _t['im_forward'].tic()
     blobs_out = net.forward(**forward_kwargs)
+    _t['im_forward'].toc()
+
+    print "caffe_forward time: {:.3f}s".format(_t['im_forward'].average_time)
 
     if cfg.TEST.HAS_RPN:
         assert len(im_scales) == 1, "Only single-image batch implemented"

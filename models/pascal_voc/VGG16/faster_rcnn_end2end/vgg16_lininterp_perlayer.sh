@@ -1,9 +1,18 @@
 #!/bin/bash
 
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round1.prototxt test_all_round1.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round2.prototxt test_all_round2.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round3.prototxt test_all_round3.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc train_all_round4.prototxt test_all_round4.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc solver_round1.prototxt test_all_round1.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc solver_round2.prototxt test_all_round2.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round3.prototxt test_all_round3.prototxt
+#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round4.prototxt test_all_round4.prototxt
+
+########## test only #####################
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 2 VGG16 pascal_voc vgg16_lininterp_finetune1_iter_70000.caffemodel test_all_round1.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 2 VGG16 pascal_voc vgg16_lininterp_finetune2_iter_70000.caffemodel test_all_round2.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 2 VGG16 pascal_voc vgg16_lininterp_finetune3_iter_70000.caffemodel test_all_round3.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 2 VGG16 pascal_voc vgg16_lininterp_finetune4_iter_70000.caffemodel test_all_round4.prototxt
+
+
+#./build/tools/caffe time --model=../models/pascal_voc/VGG16/faster_rcnn_end2end/tmp_train_val/test_all_round1.prototxt -iterations 50  2>&1 | tee   ./time_vgg16_lininterp_finetune1.out
 
 #./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu1_1.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_perlayer.sh 2 VGG16 pascal_voc test_all_relu1_2.prototxt

@@ -138,7 +138,7 @@ def voc_eval(detpath,
         lines = f.readlines()
 
     splitlines = [x.strip().split(' ') for x in lines]
-    print "splitlines: ", splitlines
+    #print "splitlines: ", splitlines
     image_ids = [x[0] for x in splitlines]
     confidence = np.array([float(x[1]) for x in splitlines])
     BB = np.array([[float(z) for z in x[2:]] for x in splitlines])
@@ -146,7 +146,7 @@ def voc_eval(detpath,
     # sort by confidence
     sorted_ind = np.argsort(-confidence)
     sorted_scores = np.sort(-confidence)
-    print "sorted_ind: ", sorted_ind
+    #print "sorted_ind: ", sorted_ind
     BB = BB[sorted_ind, :]
     image_ids = [image_ids[x] for x in sorted_ind]
 
