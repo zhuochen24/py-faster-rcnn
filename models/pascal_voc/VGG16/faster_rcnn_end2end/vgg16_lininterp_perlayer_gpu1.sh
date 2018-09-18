@@ -7,22 +7,16 @@
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc solver_round4_2.prototxt test_all_round4.prototxt
 #
 #
-#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round1_3.prototxt test_all_round1.prototxt
-#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round2_3.prototxt test_all_round2.prototxt
-#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round3_3.prototxt test_all_round3.prototxt
-#./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round4_3.prototxt test_all_round4.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round1_3.prototxt test_all_round1.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round2_3.prototxt test_all_round2.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round3_3.prototxt test_all_round3.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 1 VGG16 pascal_voc solver_round4_3.prototxt test_all_round4.prototxt
 
 
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round1_4.prototxt test_all_round1.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round2_4.prototxt test_all_round2.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round3_4.prototxt test_all_round3.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round4_4.prototxt test_all_round4.prototxt
-
-
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round1_5.prototxt test_all_round1.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round2_5.prototxt test_all_round2.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round3_5.prototxt test_all_round3.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 0 VGG16 pascal_voc solver_round4_5.prototxt test_all_round4.prototxt
 
 ########## first train ########
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune.sh 2 VGG16 pascal_voc solver_round1.prototxt test_all_round1.prototxt
