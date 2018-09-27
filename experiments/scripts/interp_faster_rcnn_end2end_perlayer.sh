@@ -45,7 +45,7 @@ case $DATASET in
     ;;
 esac
 
-LOG="experiments/logs/faster_rcnn_end2end_${NET}_${TEST_PROTO}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
+LOG="experiments/logs/faster_rcnn_end2end_${NET}_${DATASET}_${TEST_PROTO}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
