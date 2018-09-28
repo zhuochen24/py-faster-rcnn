@@ -160,7 +160,7 @@ layer {
 #========= RPN ============
 
 layer {
-  name: "rpn/output"
+  name: "rpn_conv/3x3"
   type: "Convolution"
   bottom: "conv5"
   top: "rpn/output"

@@ -26,7 +26,7 @@ layer {
     num_output: 96
     pad: 3
     kernel_size: 7
-    stride: 2
+    stride: 4
   }
 }
 layer {
@@ -38,7 +38,7 @@ layer {
 layer {
   name: "norm1"
   type: "LRN"
-  bottom: "conv1"
+  bottom: "lininterp/conv1"
   top: "norm1"
   lrn_param {
     local_size: 3
@@ -75,7 +75,7 @@ layer {
     num_output: 256
     pad: 2
     kernel_size: 5
-    stride: 2
+    stride: 4
   }
 }
 layer {
@@ -87,7 +87,7 @@ layer {
 layer {
   name: "norm2"
   type: "LRN"
-  bottom: "conv2"
+  bottom: "lininterp/conv2"
   top: "norm2"
   lrn_param {
     local_size: 3
@@ -134,12 +134,6 @@ layer {
   top: "conv3"
 }
 layer {
-  type: "Interp"
-  name: "lininterp/conv3"
-  top: "lininterp/conv3"
-  bottom: "conv3"
-}
-layer {
   name: "conv4"
   type: "Convolution"
   bottom: "lininterp/conv3"
@@ -178,7 +172,7 @@ layer {
     num_output: 256
     pad: 1
     kernel_size: 3
-    stride: 1
+    stride: 2
   }
 }
 layer {
@@ -188,9 +182,9 @@ layer {
   top: "conv5"
 }
 layer {
-  name: "rpn_conv/3x3"
+  name: "rpn/output"
   type: "Convolution"
-  bottom: "conv5"
+  bottom: "lininterp/conv5"
   top: "rpn/output"
   param {
     lr_mult: 1.0
@@ -202,7 +196,7 @@ layer {
     num_output: 256
     pad: 1
     kernel_size: 3
-    stride: 1
+    stride: 2
     weight_filler {
       type: "gaussian"
       std: 0.01
@@ -222,7 +216,7 @@ layer {
 layer {
   name: "rpn_cls_score"
   type: "Convolution"
-  bottom: "rpn/output"
+  bottom: "lininterp/rpn/output"
   top: "rpn_cls_score"
   param {
     lr_mult: 1.0
@@ -248,7 +242,7 @@ layer {
 layer {
   name: "rpn_bbox_pred"
   type: "Convolution"
-  bottom: "rpn/output"
+  bottom: "lininterp/rpn/output"
   top: "rpn_bbox_pred"
   param {
     lr_mult: 1.0
@@ -381,7 +375,7 @@ layer {
 layer {
   name: "roi_pool_conv5"
   type: "ROIPooling"
-  bottom: "conv5"
+  bottom: "lininterp/conv5"
   bottom: "rois"
   top: "roi_pool_conv5"
   roi_pooling_param {

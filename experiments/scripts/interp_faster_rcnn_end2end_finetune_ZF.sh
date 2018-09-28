@@ -16,7 +16,7 @@ GPU_ID=$1
 NET=$2
 NET_lc=${NET,,}
 DATASET=$3
-TEST_MODEL=$4
+TRAIN_PROTO=$4
 TEST_PROTO=$5
 
 array=( $@ )
@@ -46,30 +46,29 @@ case $DATASET in
     ;;
 esac
 
-LOG="experiments/logs/faster_rcnn_end2end_${NET}_TEST_${TEST_MODEL}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
+LOG="experiments/logs/faster_rcnn_end2end_${NET}_${TRAIN_PROTO}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
-#time ./tools/train_net.py --gpu ${GPU_ID} \
-#  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/tmp_solver/${TRAIN_PROTO} \
-#   --weights data/faster_rcnn_models/VGG16_faster_rcnn_final.caffemodel \
-#  --imdb ${TRAIN_IMDB} \
-#  --iters ${ITERS} \
-#  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
-#  ${EXTRA_ARGS}
-#
-#set +x
-#NET_FINAL=`grep -B 1 "done solving" ${LOG} | grep "Wrote snapshot" | awk '{print $4}'`
-#set -x
+time ./tools/train_net.py --gpu ${GPU_ID} \
+  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/tmp_solver/${TRAIN_PROTO} \
+   --weights data/faster_rcnn_models/ZF_faster_rcnn_final.caffemodel \
+  --imdb ${TRAIN_IMDB} \
+  --iters ${ITERS} \
+  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
+  ${EXTRA_ARGS}
+
+set +x
+NET_FINAL=`grep -B 1 "done solving" ${LOG} | grep "Wrote snapshot" | awk '{print $4}'`
+set -x
 
 #_lininterp_conv11.prototxt \
 time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/tmp_train_val/${TEST_PROTO} \
-   --net output/faster_rcnn_end2end/voc_2007_trainval/${TEST_MODEL} \
+  --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/faster_rcnn_end2end.yml \
   ${EXTRA_ARGS}
 
  # --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test_lininterp_conv11.prototxt \
  #  --net data/faster_rcnn_models/VGG16_faster_rcnn_final.caffemodel \
-#  --net ${NET_FINAL} \

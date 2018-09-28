@@ -23,7 +23,7 @@ def gen_VIP_perlayer_new(file_prefix):
                 #find after which layer to insert interpolate
 		if convLayer.name == "rpn_cls_score" or convLayer.name == "rpn_bbox_pred":
 			continue
-		elif convLayer.name == 'rpn_conv/3x3':
+		elif convLayer.name == 'rpn/output':
 			interpLayerName = 'rpn_relu_3x3'
 		else:
 			interpLayerName = 'relu'+convLayer.name[-1]
@@ -111,11 +111,12 @@ def gen_VIP_round_new(roundInd,layers_to_interp,file_prefix, gen_solver):
 				interpLayerName = 'relu'+convLayer.name[4:]
 			if interpLayerName not in layerNames:
                             print 'Interpolation layer not found'
-			#print '"{}",'.format(interpLayerName)
+			print '"{}",'.format(interpLayerName)
 			interp_layer_names.append(interpLayerName)
 			count+=1
 			interp_bottom_name = convLayer.name
 			interp_bottom_names.append(interp_bottom_name)
+	print "layers to interpolate: ", interp_layer_names
 
 	for interp_bottom_name, interpLayerName in zip(interp_bottom_names, interp_layer_names):
 		for layeridx, layer in enumerate(layers):
@@ -178,22 +179,28 @@ all_layers_to_interp=[
 	"conv5",
 	"rpn/output"
 ]
-#for roundInd in range(1,5):
-#	if roundInd == 1:
-#		###### for round 1
-#		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,14]]
-#	elif roundInd == 2:
-#		###### for round 2
-#		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,4,7,10,13,14]]
-#	elif roundInd == 3:
-#		###### for round 3
-#		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,4,7,8,9,10,11,13,14]]
-#	elif roundInd == 4:
-#		###### for round 4
-#		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,3,4,5,6,7,8,9,10,11,12,13,14]]
-#	gen_VIP_round_new(roundInd,layers_to_interp, 'train_all', gen_solver=True)
-#	gen_VIP_round_new(roundInd,layers_to_interp, 'test_all', gen_solver=False)
+for roundInd in range(1,7):
+	if roundInd == 1:
+		###### for round 1
+		layers_to_interp = [all_layers_to_interp[i] for i in [1]]
+	elif roundInd == 2:
+		###### for round 2
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,6]]
+	elif roundInd == 3:
+		###### for round 3
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,5,6]]
+	elif roundInd == 4:
+		###### for round 4
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,3,5,6]]
+	elif roundInd == 5:
+		###### for round 4
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,3,5,6]]
+	elif roundInd == 6:
+		###### for round 4
+		layers_to_interp = [all_layers_to_interp[i] for i in [1,2,3,4,5,6]]
+	#gen_VIP_round_new(roundInd,layers_to_interp, 'train_all', gen_solver=True)
+	gen_VIP_round_new(roundInd,layers_to_interp, 'test_all', gen_solver=False)
 
-gen_VIP_perlayer_new('train_all')
-gen_VIP_perlayer_new('test_all')
+#gen_VIP_perlayer_new('train_all')
+#gen_VIP_perlayer_new('test_all')
 

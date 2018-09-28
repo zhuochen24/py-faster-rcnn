@@ -20,7 +20,7 @@ layer {
     num_output: 96
     pad: 3
     kernel_size: 7
-    stride: 2
+    stride: 4
   }
 }
 layer {
@@ -30,9 +30,15 @@ layer {
   top: "conv1"
 }
 layer {
+  type: "Interp"
+  name: "lininterp/conv1"
+  top: "lininterp/conv1"
+  bottom: "conv1"
+}
+layer {
   name: "norm1"
   type: "LRN"
-  bottom: "conv1"
+  bottom: "lininterp/conv1"
   top: "norm1"
   lrn_param {
     local_size: 3
@@ -106,7 +112,7 @@ layer {
     num_output: 384
     pad: 1
     kernel_size: 3
-    stride: 1
+    stride: 2
   }
 }
 layer {
@@ -116,9 +122,15 @@ layer {
   top: "conv3"
 }
 layer {
+  type: "Interp"
+  name: "lininterp/conv3"
+  top: "lininterp/conv3"
+  bottom: "conv3"
+}
+layer {
   name: "conv4"
   type: "Convolution"
-  bottom: "conv3"
+  bottom: "lininterp/conv3"
   top: "conv4"
   convolution_param {
     num_output: 384
@@ -142,7 +154,7 @@ layer {
     num_output: 256
     pad: 1
     kernel_size: 3
-    stride: 1
+    stride: 2
   }
 }
 layer {
@@ -152,9 +164,15 @@ layer {
   top: "conv5"
 }
 layer {
-  name: "rpn_conv/3x3"
-  type: "Convolution"
+  type: "Interp"
+  name: "lininterp/conv5"
+  top: "lininterp/conv5"
   bottom: "conv5"
+}
+layer {
+  name: "rpn/output"
+  type: "Convolution"
+  bottom: "lininterp/conv5"
   top: "rpn/output"
   convolution_param {
     num_output: 256
@@ -179,14 +197,14 @@ layer {
 }
 layer {
   type: "Interp"
-  name: "lininterp/rpn_relu_3x3"
-  top: "lininterp/rpn_relu_3x3"
+  name: "lininterp/rpn/output"
+  top: "lininterp/rpn/output"
   bottom: "rpn/output"
 }
 layer {
   name: "rpn_cls_score"
   type: "Convolution"
-  bottom: "lininterp/rpn_relu_3x3"
+  bottom: "lininterp/rpn/output"
   top: "rpn_cls_score"
   convolution_param {
     num_output: 18
@@ -206,7 +224,7 @@ layer {
 layer {
   name: "rpn_bbox_pred"
   type: "Convolution"
-  bottom: "lininterp/rpn_relu_3x3"
+  bottom: "lininterp/rpn/output"
   top: "rpn_bbox_pred"
   convolution_param {
     num_output: 36
@@ -273,7 +291,7 @@ layer {
 layer {
   name: "roi_pool_conv5"
   type: "ROIPooling"
-  bottom: "conv5"
+  bottom: "lininterp/conv5"
   bottom: "rois"
   top: "roi_pool_conv5"
   roi_pooling_param {

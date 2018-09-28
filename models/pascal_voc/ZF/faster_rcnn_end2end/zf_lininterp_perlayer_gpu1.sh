@@ -1,13 +1,21 @@
 #!/bin/bash
 
+########## test only #####################
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly_origin.sh 1 ZF pascal_voc zf_faster_rcnn_final.caffemodel test_all.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 1 ZF pascal_voc zf_lininterp_finetune1_iter_70000.caffemodel test_all_round1.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 1 ZF pascal_voc zf_lininterp_finetune2_iter_70000.caffemodel test_all_round2.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 1 ZF pascal_voc zf_lininterp_finetune3_iter_70000.caffemodel test_all_round3.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 1 ZF pascal_voc zf_lininterp_finetune4_iter_70000.caffemodel test_all_round4.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 1 ZF pascal_voc zf_lininterp_finetune5_iter_70000.caffemodel test_all_round5.prototxt
+./experiments/scripts/interp_faster_rcnn_end2end_finetune_testonly.sh 1 ZF pascal_voc zf_lininterp_finetune6_iter_70000.caffemodel test_all_round6.prototxt
 
+################ 6 rounds of ViP finetuning ###############3
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune_ZF.sh 0 ZF pascal_voc solver_round1.prototxt test_all_round1.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune_ZF.sh 0 ZF pascal_voc solver_round2.prototxt test_all_round2.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune_ZF.sh 0 ZF pascal_voc solver_round3.prototxt test_all_round3.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune_ZF.sh 0 ZF pascal_voc solver_round4.prototxt test_all_round4.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune_ZF.sh 1 ZF pascal_voc solver_round5.prototxt test_all_round5.prototxt
 #./experiments/scripts/interp_faster_rcnn_end2end_finetune_ZF.sh 1 ZF pascal_voc solver_round6.prototxt test_all_round6.prototxt
-./experiments/scripts/interp_faster_rcnn_end2end_finetune_ZF.sh 0 ZF pascal_voc solver_origin.prototxt test_all.prototxt
 
 ################ per-layer sensitivity analysis on ZF on pascal_voc #######
 #./experiments/scripts/interp_faster_rcnn_end2end_perlayer_ZF.sh 1 ZF pascal_voc test_all.prototxt

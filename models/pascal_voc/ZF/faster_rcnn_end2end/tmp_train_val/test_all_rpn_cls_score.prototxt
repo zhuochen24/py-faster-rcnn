@@ -160,7 +160,7 @@ layer {
 #========= RPN ============
 
 layer {
-  name: "rpn/output"
+  name: "rpn_conv/3x3"
   type: "Convolution"
   bottom: "conv5"
   top: "rpn/output"
@@ -184,10 +184,16 @@ layer {
   top: "rpn_cls_score"
   convolution_param {
     num_output: 18   # 2(bg/fg) * 9(anchors)
-    kernel_size: 1 pad: 0 stride: 1
+    kernel_size: 1 pad: 0 stride: 2
     weight_filler { type: "gaussian" std: 0.01 }
     bias_filler { type: "constant" value: 0 }
   }
+}
+layer {
+  type: "Interp"
+  name: "lininterp/score"
+  top: "lininterp/score"
+  bottom: "rpn_cls_score"
 }
 layer {
   name: "rpn_bbox_pred"
@@ -202,7 +208,7 @@ layer {
   }
 }
 layer {
-   bottom: "rpn_cls_score"
+   bottom: "lininterp/score"
    top: "rpn_cls_score_reshape"
    name: "rpn_cls_score_reshape"
    type: "Reshape"

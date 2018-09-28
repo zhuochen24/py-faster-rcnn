@@ -4,7 +4,7 @@
 # DATASET is either pascal_voc or coco.
 #
 # Example:
-# ./experiments/scripts/faster_rcnn_end2end.sh 0 VGG_CNN_M_1024 pascal_voc train.prototxt test.prototxt\
+# ./experiments/scripts/faster_rcnn_end2end.sh 0 VGG_CNN_M_1024 pascal_voc tmp_train_val/xxx.prototxt\
 #   --set EXP_DIR foobar RNG_SEED 42 TRAIN.SCALES "[400, 500, 600, 700]"
 
 set -x
@@ -16,12 +16,11 @@ GPU_ID=$1
 NET=$2
 NET_lc=${NET,,}
 DATASET=$3
-TEST_MODEL=$4
-TEST_PROTO=$5
+TEST_PROTO=$4
 
 array=( $@ )
 len=${#array[@]}
-EXTRA_ARGS=${array[@]:5:$len}
+EXTRA_ARGS=${array[@]:4:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
 case $DATASET in
@@ -46,12 +45,12 @@ case $DATASET in
     ;;
 esac
 
-LOG="experiments/logs/faster_rcnn_end2end_${NET}_TEST_${TEST_MODEL}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
+LOG="experiments/logs/faster_rcnn_end2end_${NET}_${DATASET}_${TEST_PROTO}.txt.`date +'%Y-%m-%d_%H-%M-%S'`"
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
 #time ./tools/train_net.py --gpu ${GPU_ID} \
-#  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/tmp_solver/${TRAIN_PROTO} \
+#  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/interp_conv43_solver_trainall.prototxt \
 #   --weights data/faster_rcnn_models/VGG16_faster_rcnn_final.caffemodel \
 #  --imdb ${TRAIN_IMDB} \
 #  --iters ${ITERS} \
@@ -65,11 +64,11 @@ echo Logging output to "$LOG"
 #_lininterp_conv11.prototxt \
 time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/tmp_train_val/${TEST_PROTO} \
-   --net output/faster_rcnn_end2end/voc_2007_trainval/${TEST_MODEL} \
+  --net data/faster_rcnn_models/ZF_faster_rcnn_final.caffemodel \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/faster_rcnn_end2end.yml \
   ${EXTRA_ARGS}
 
  # --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test_lininterp_conv11.prototxt \
  #  --net data/faster_rcnn_models/VGG16_faster_rcnn_final.caffemodel \
-#  --net ${NET_FINAL} \
+ # --net ${NET_FINAL} \

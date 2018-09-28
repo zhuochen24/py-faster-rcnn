@@ -65,7 +65,8 @@ echo Logging output to "$LOG"
 #_lininterp_conv11.prototxt \
 time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/tmp_train_val/${TEST_PROTO} \
-   --net output/faster_rcnn_end2end/voc_2007_trainval/${TEST_MODEL} \
+  # --net output/faster_rcnn_end2end/voc_2007_trainval/${TEST_MODEL} \
+   --net data/faster_rcnn_models/ZF_faster_rcnn_final.caffemodel \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/faster_rcnn_end2end.yml \
   ${EXTRA_ARGS}
