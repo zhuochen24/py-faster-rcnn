@@ -7,6 +7,7 @@
 
 
 file_names = [
+'faster_rcnn_end2end_ZF_TEST_zf_lininterp_origin_iter_70000.caffemodel.txt.2018-09-28_17-00-43',
 'faster_rcnn_end2end_ZF_TEST_zf_lininterp_finetune1_iter_70000.caffemodel.txt.2018-09-28_14-03-36', 
 'faster_rcnn_end2end_ZF_TEST_zf_lininterp_finetune2_iter_70000.caffemodel.txt.2018-09-28_14-07-13',
 'faster_rcnn_end2end_ZF_TEST_zf_lininterp_finetune3_iter_70000.caffemodel.txt.2018-09-28_14-10-51',
